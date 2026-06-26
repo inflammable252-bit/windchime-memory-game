@@ -5,8 +5,6 @@ const colorRed = "rgb(119, 79, 88)";
 const colorBlue = "rgb(91, 87, 124)";
 const gameLengthSeconds = 10;
 const interval = (gameLengthSeconds*1000) / 8;
-let restartGame = false;
-
 let selection = [];
 let pickCount = 0;
 
@@ -20,37 +18,44 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function Pull() {    
+    let restartGame = false;
 
-
-async function memoryGame() {
-    await delay(interval)
-    pickCount = 0;
-    selection = [];
     console.log("MEMORY GAME");
-    shuffleRunes()
-    for (let i=0; i<5; i++) { //Rune display
-        if (restartGame===true) {
-            break;
-        }
-        else if (restartGame===false) {
-            await delay(interval);
-            console.log("Icon " + i + ": " + runes[i])
-            displayCurrent(runes[i])
-        }
-        console.log("resetGame: ", restartGame)
-        }
-    if (restartGame===true) {
-        console.log("Game restarted!")
-        restartGame=false;
-        return;
-    }
-    displayCurrent("clear");
-    await delay(interval); // Extra delay
-    checkSelection()
-    console.log(result);
-    console.log("resetGame: ", restartGame)
-}
+    memoryGame()
 
+    async function memoryGame() {
+        shuffleRunes()
+        await delay(interval);
+        let counter = 0;
+        while (restartGame===false && counter < 5) { //Rune display
+            console.log("Icon " + counter + ": " + runes[counter])
+            displayCurrent(runes[counter])
+            console.log("resetGame: ", restartGame)
+            counter++
+            await delay(interval);
+            }
+        if (restartGame===true) {
+            console.log("Game restarted!")
+            restartGame=false;
+            await delay(interval)
+            return;
+        }
+        displayCurrent("clear");
+        await delay(interval); // Extra delay
+        checkSelection()
+        console.log(result);
+        console.log("resetGame: ", restartGame)
+    }
+
+    function getRestart() {
+        return restartGame
+    }
+    function updateRestart(boolean) {
+        restartGame = boolean;
+    }
+    return {getRestart, updateRestart}
+}
 function checkSelection() {
     selection.forEach((item, index) => {
         if (item === runes[index]) {
@@ -129,7 +134,7 @@ picker.addEventListener("click", (e) => {
 function selectRune(url, target) {
     if (pickCount === 5) {
         console.log("End!"); return
-     }
+    }
     selection.push(target)
     runeSlots[pickCount].style.backgroundImage = `url(./${url})`
     pickCount++
@@ -142,9 +147,9 @@ menuButtons.addEventListener("click", (e) => {
     switch (e.target.id) {
         case ("restart"):
             console.log("restart clicked!")
-            restartGame = true;
+            currentGame.updateRestart(true);
             clearUI();
-            memoryGame()
+            currentGame = Pull()
             break;
     }
 })
@@ -154,13 +159,15 @@ function clearUI() {
     runeSlots.forEach((slot) => {
         slot.style.backgroundImage = "";
     })
+    selection = [];
+    pickCount = 0
 }
 function refreshRestartButton() {
     const button = document.getElementById("restart");
-    if (restartGame === true) {
+    if (currentGame.getRestart === true) {
         button.classList.add("wait");
     }
     else button.classList.remove("wait");
 }
 
-memoryGame()
+let currentGame = Pull();
