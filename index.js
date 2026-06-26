@@ -11,10 +11,10 @@ async function memoryGame() {
   for (let i=0; i<5; i++) { //Rune display
     await delay(interval);
     console.log(runes[i])
+    displayCurrent(runes[i])
   }
   await delay(interval) // Extra delay
 
-  console.log("Delay complete");
   doSomething();
 }
 
@@ -29,5 +29,51 @@ function shuffleRunes() {
     }
     console.log(runes)
 }
+
+function displayCurrent(rune) {
+    let floatingRune = document.getElementById("current-icon");
+    let current;
+    switch (rune) {
+        case "X":
+            current="X.jpg";
+            break;
+        case "Circle":
+            current="circle.jpg";
+            break;
+        case "Diamond":
+            current="diamond.jpg";
+            break;
+        case "Triangle":
+            current="triangle.jpg";
+            break;
+        case "T":
+            current="T.jpg";
+            break;
+    }
+
+    floatingRune.style.backgroundImage = `url(./${current})`
+}
+
+const buttons = document.getElementById("picker")
+buttons.addEventListener("click", (e) => {
+    let target;
+    switch (e.target.id) {
+        case "X":
+            target="X.jpg";
+            break;
+        case "circle":
+            target="circle.jpg";
+            break;
+        case "diamond":
+            target="diamond.jpg";
+            break;
+        case "triangle":
+            target="triangle.jpg";
+            break;
+        case "t":
+            target="T.jpg";
+            break;
+    }
+})
 
 memoryGame();

@@ -58,7 +58,7 @@ article#rune-box {
 }
 
 div.rune {
-    background-image: url(./X.jpg);
+    /* background-image: url(./X.jpg); */
     position: relative;
     top: 10px;
     background-position: center;
@@ -82,7 +82,7 @@ div#current-icon {
     width: var(--box);
     height: var(--box);
 
-    background-image: url(./circle.jpg);
+    /* background-image: url(./circle.jpg); */
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
