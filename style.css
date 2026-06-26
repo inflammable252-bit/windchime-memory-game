@@ -6,8 +6,8 @@
 body {
     background-color: var(--bg);
     display: grid;
-    grid-template-columns: 1fr 3fr 1fr;
-    grid-template-rows: 1fr 4fr 1fr;
+    grid-template-columns: 0.75fr 3fr 0.75fr;
+    grid-template-rows: 1fr 3fr 2fr;
     min-height: 100vh;
 }
 
@@ -16,13 +16,14 @@ main {
     grid-row: 2/3;
     border: 1px solid purple;
     display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: 2fr 1fr;
-    gap: 2vw;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 0.5fr 0.5fr;
+    gap: 1vw;
+    align-items: start;
 }
 
 article#rune-box {
-    --box: calc(225px + 5vw);
+    --box: clamp(200px, 22vw, 350px);
 
     border: 1px solid gray;
     height: var(--box);
@@ -68,28 +69,53 @@ div.rune {
     width: 90%;
 }
 
+@keyframes bob-around {
+    0% {
+        top: 0;
+    }
+    50% {
+        top: 5%;
+    }
+    100% {
+        top: 0;
+    }
+}
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 10px #FFF;
+    }
+    50% {
+        top: 5%;
+    }
+    100% {
+        top: 0;
+    }
+}
+
 div#windchime {
     grid-row: 1/-1;
     width: 100%;
     display: flex;
     flex-direction: column;
+    gap: 2vw;
+    position: relative;
     align-items: center;
-    justify-content: end;
-    gap: 3vw;
+    animation: bob-around 3.5s infinite ease-in-out;
 }
 div#current-icon {
     --box: clamp(65px, 5vw, 110px);
     width: var(--box);
     height: var(--box);
-
+    border-radius: 50%;
     /* background-image: url(./circle.jpg); */
     background-position: center;
-    background-size: cover;
+    background-size: contain;
     background-repeat: no-repeat;
 }
 div#windchime img {
-    width: clamp(200px, 100%, 300px)
+    width: clamp(50px, 100%,350px)
 }
+
 div#picker {
     grid-row: 2/3;
     grid-column: 1/2;
@@ -100,12 +126,13 @@ div#picker {
         --box: calc(40px + 1vw);
         height: var(--box);
         width: var(--box);
+        margin: 2px;
         background-position: center;
         background-size: cover;
         background-repeat: no-repeat;
         background-color: black;
         border: none;
-        /* object-fit: cover; */
+        border-radius: 8px;
     }
     button#X {
         background-image: url(./X.jpg);
@@ -121,5 +148,22 @@ div#picker {
     }
     button#circle {
         background-image:url(./circle.jpg)
+    }
+}
+
+nav {
+    grid-column: 2/3;
+    grid-row: 3/5;
+    justify-self: center;
+    font-size: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    button {
+        border: 1px solid gray;
+        margin: 0.25vw;
+    }
+    #restart {
+        width: 100%;
     }
 }
