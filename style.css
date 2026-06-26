@@ -1,0 +1,125 @@
+:root {
+    --bg: rgb(47, 43, 53);
+    --red-bg: rgb(119, 79, 88);
+    --blue-bg: rgb(91, 87, 124);
+}
+body {
+    background-color: var(--bg);
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-rows: 1fr 4fr 1fr;
+    min-height: 100vh;
+}
+
+main {
+    grid-column: 2/3;
+    grid-row: 2/3;
+    border: 1px solid purple;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: 2fr 1fr;
+    gap: 2vw;
+}
+
+article#rune-box {
+    --box: calc(225px + 5vw);
+
+    border: 1px solid gray;
+    height: var(--box);
+    width: var(--box);
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+
+    #rune1 {
+        grid-row: 1/2;
+        grid-column:3/4;
+        right: 30px;
+    }
+    #rune2 {
+        grid-row: 2/3;
+        grid-column: 3/4;
+    }
+    #rune3 {
+        grid-row: 3/4;
+        grid-column: 2/3;
+        top: -15px;
+    }
+    #rune4 {
+        grid-row: 2/3;
+        grid-column: 1/2;
+    }
+    #rune5 {
+        grid-row: 1/2;
+        grid-column: 1/2;
+        left: 30px;
+    }
+}
+
+div.rune {
+    background-image: url(./X.jpg);
+    position: relative;
+    top: 10px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 90%;
+    width: 90%;
+}
+
+div#windchime {
+    grid-row: 1/-1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: end;
+    gap: 3vw;
+}
+div#current-icon {
+    --box: clamp(65px, 5vw, 110px);
+    width: var(--box);
+    height: var(--box);
+
+    background-image: url(./circle.jpg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+div#windchime img {
+    width: clamp(200px, 100%, 300px)
+}
+div#picker {
+    grid-row: 2/3;
+    grid-column: 1/2;
+    justify-self: center;
+    padding: 2vw;
+
+    button {
+        --box: calc(40px + 1vw);
+        height: var(--box);
+        width: var(--box);
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-color: black;
+        border: none;
+        /* object-fit: cover; */
+    }
+    button#X {
+        background-image: url(./X.jpg);
+    }
+    button#triangle {
+        background-image:url(./triangle.jpg)
+    }
+    button#diamond {
+        background-image:url(./diamond.jpg)
+    }
+    button#T {
+        background-image:url(./T.jpg)
+    }
+    button#circle {
+        background-image:url(./circle.jpg)
+    }
+}
