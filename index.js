@@ -1,45 +1,69 @@
-const runes = ["T", "X", "Diamond", "Circle", "Triangle"];
+const runes = ["T", "X", "diamond", "circle", "triangle"];
 const colors = ["normal", "red", "blue"];
 const colorRegular = "rgb(47, 43, 53)";
 const colorRed = "rgb(119, 79, 88)";
 const colorBlue = "rgb(91, 87, 124)";
-const interval = 500;
-let gameActive = false;
+const gameLengthSeconds = 10;
+const interval = (gameLengthSeconds*1000) / 8;
+let restartGame = false;
 
 let selection = [];
-let round = 1;
+let pickCount = 0;
+
+let winMessagesArr = ["Great prog!", "Now we can see the rest of P1!", "The rest of the fight is easy, right?"]
+let loseMessagesArr = ["Should have flasked.", "Did you forget to repair?", "So much lag.", "Hearthing saves repairs."]
+let winMessage = `Success! ${winMessagesArr[Math.floor(Math.random() * winMessagesArr.length)]}`
+let loseMessage = `Wipe! ${loseMessagesArr[Math.floor(Math.random() * loseMessagesArr.length)]}`
+let result = loseMessage;
 
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+
+
 async function memoryGame() {
-  if (gameActive = true) {
-    console.log("Restarting...")
-    await delay(interval*2)
-  }
-  console.log("MEMORY GAME");
-  shuffleRunes()
-  gameActive = true;
-  for (let i=0; i<5; i++) { //Rune display
-    if (gameActive===true) {
-    await delay(interval);
-    console.log(runes[i])
-    displayCurrent(runes[i])
+    await delay(interval)
+    pickCount = 0;
+    selection = [];
+    console.log("MEMORY GAME");
+    shuffleRunes()
+    for (let i=0; i<5; i++) { //Rune display
+        if (restartGame===true) {
+            break;
+        }
+        else if (restartGame===false) {
+            await delay(interval);
+            console.log("Icon " + i + ": " + runes[i])
+            displayCurrent(runes[i])
+        }
+        console.log("resetGame: ", restartGame)
+        }
+    if (restartGame===true) {
+        console.log("Game restarted!")
+        restartGame=false;
+        return;
     }
-    else if (gameActive===false) {
-        console.log("Game deactivated!")
-        return
-    }
-}
-await delay(interval); // Extra delay
-gameActive = false;
-displayCurrent("clear");
-checkSelection();
+    displayCurrent("clear");
+    await delay(interval); // Extra delay
+    checkSelection()
+    console.log(result);
+    console.log("resetGame: ", restartGame)
 }
 
 function checkSelection() {
-  console.log("Next task!");
+    selection.forEach((item, index) => {
+        if (item === runes[index]) {
+            result = winMessage;
+        } 
+        else {
+            result = loseMessage;
+            return
+        }
+        console.log(selection[index], "vs", runes[index])
+    })
+    console.log(selection)
+    console.log(runes)
 }
 
 function shuffleRunes() {
@@ -57,13 +81,13 @@ function displayCurrent(rune) {
         case "X":
             current="X.jpg";
             break;
-        case "Circle":
+        case "circle":
             current="circle.jpg";
             break;
-        case "Diamond":
+        case "diamond":
             current="diamond.jpg";
             break;
-        case "Triangle":
+        case "triangle":
             current="triangle.jpg";
             break;
         case "T":
@@ -80,54 +104,63 @@ function displayCurrent(rune) {
 const picker = document.getElementById("picker");
 const runeSlots = document.querySelectorAll("div.rune");
 picker.addEventListener("click", (e) => {
-    let target;
+    let url;
     switch (e.target.id) {
+        case "picker":
+            return;
         case "X":
-            target="X.jpg";
+            url="X.jpg";
             break;
         case "circle":
-            target="circle.jpg";
+            url="circle.jpg";
             break;
         case "diamond":
-            target="diamond.jpg";
+            url="diamond.jpg";
             break;
         case "triangle":
-            target="triangle.jpg";
+            url="triangle.jpg";
             break;
         case "T":
-            target="T.jpg";
+            url="T.jpg";
             break;
     }
-    selectRune(target)
+    selectRune(url, e.target.id)
 })
-function selectRune(target) {
-    if (round > 5) {
+function selectRune(url, target) {
+    if (pickCount === 5) {
         console.log("End!"); return
      }
     selection.push(target)
-    runeSlots[round-1].style.backgroundImage = `url(./${target})`
-    round++
+    runeSlots[pickCount].style.backgroundImage = `url(./${url})`
+    pickCount++
+    console.log(selection)
 }
 const menuButtons = document.querySelector("nav");
 
 menuButtons.addEventListener("click", (e) => {
+    refreshRestartButton()
     switch (e.target.id) {
         case ("restart"):
-            resetGame();
-            memoryGame();
+            console.log("restart clicked!")
+            restartGame = true;
+            clearUI();
+            memoryGame()
             break;
-            
     }
 })
-function resetGame() {
-    gameActive = false;
-    round = 1;
-    selection = [];
+function clearUI() {
     const currentIcon = document.getElementById("current-icon");
     currentIcon.style.backgroundImage = "";
     runeSlots.forEach((slot) => {
         slot.style.backgroundImage = "";
     })
 }
+function refreshRestartButton() {
+    const button = document.getElementById("restart");
+    if (restartGame === true) {
+        button.classList.add("wait");
+    }
+    else button.classList.remove("wait");
+}
 
-memoryGame();
+memoryGame()
