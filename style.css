@@ -166,4 +166,27 @@ nav {
     #restart {
         width: 100%;
     }
+
+}
+
+p#alert {
+    position: absolute;
+    align-self: center;
+    justify-self: center;
+    font-size: calc(4rem + 4vw);
+    z-index: 5;
+    color: #FFF;
+    font-weight: 600;
+}
+p#alert.whoops {
+    color: red;
+}
+p#alert.great-success {
+    color: green;
+}
+aside#message-area {
+
+}
+p#message {
+    color: #FFF;
 }

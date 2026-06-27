@@ -3,16 +3,15 @@ const colors = ["normal", "red", "blue"];
 const colorRegular = "rgb(47, 43, 53)";
 const colorRed = "rgb(119, 79, 88)";
 const colorBlue = "rgb(91, 87, 124)";
-const gameLengthSeconds = 10;
+const gameLengthSeconds = 5;
 const interval = (gameLengthSeconds*1000) / 8;
 let selection = [];
 let pickCount = 0;
 
-let winMessagesArr = ["Great prog!", "Now we can see the rest of P1!", "The rest of the fight is easy, right?"]
-let loseMessagesArr = ["Should have flasked.", "Did you forget to repair?", "So much lag.", "Hearthing saves repairs."]
-let winMessage = `Success! ${winMessagesArr[Math.floor(Math.random() * winMessagesArr.length)]}`
-let loseMessage = `Wipe! ${loseMessagesArr[Math.floor(Math.random() * loseMessagesArr.length)]}`
-let result = loseMessage;
+let result = "loss";
+let resultText ;
+
+//add another win check variable
 
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -22,6 +21,7 @@ function Pull() {
     let restartGame = false;
 
     console.log("MEMORY GAME");
+    updateMessages().clear()
     memoryGame()
 
     async function memoryGame() {
@@ -38,12 +38,12 @@ function Pull() {
         if (restartGame===true) {
             console.log("Game restarted!")
             restartGame=false;
-            await delay(interval)
             return;
         }
         displayCurrent("clear");
         await delay(interval); // Extra delay
         checkSelection()
+        updateMessages().winOrLoss()
         console.log(result);
         console.log("resetGame: ", restartGame)
     }
@@ -59,10 +59,10 @@ function Pull() {
 function checkSelection() {
     selection.forEach((item, index) => {
         if (item === runes[index]) {
-            result = winMessage;
+            result = "win";
         } 
         else {
-            result = loseMessage;
+            result = "lose";
             return
         }
         console.log(selection[index], "vs", runes[index])
@@ -168,6 +168,54 @@ function refreshRestartButton() {
         button.classList.add("wait");
     }
     else button.classList.remove("wait");
+}
+function updateMessages() {
+    const alert = document.getElementById("alert");
+    const window = document.getElementById("message-area");
+    const message = document.getElementById("message");
+    
+    let winMessagesArr = ["Great prog!", "Now we can see the rest of P1!", "The rest of the fight is easy, right?"]
+    let loseMessagesArr = ["Should have flasked.", "Did you forget to repair?", "So much lag.", "Hearthing saves repairs."]
+    let winMessage = () => {
+        const randomMsg = winMessagesArr[Math.floor(Math.random() * winMessagesArr.length)]
+        return `Win! ${randomMsg}`
+        }
+    let loseMessage = () => {
+        const randomMsg = loseMessagesArr[Math.floor(Math.random() * loseMessagesArr.length)]
+        return `Wipe! ${randomMsg}`
+        }
+    
+    function determineResultText() {
+    result === "win" ? resultText = winMessage() : resultText = loseMessage()
+    }
+
+    function winOrLoss() {
+        let alertText;
+        if (result === "win") {
+            alertText = "SUCCESS";
+            message.textContent = winMessage();
+            alert.classList.add("great-success");
+        }
+        else {
+            alertText = "YOU ARE DEAD";
+            message.textContent = loseMessage();
+            alert.classList.add("whoops")
+            }
+        alert.textContent = alertText;
+        console.log(alert.textContent)
+        
+        // then style.animation
+    }
+
+    function clear() {
+        result = loseMessage;
+        alert.textContent = "";
+        message.textContent = "";
+        alert.classList.remove("great-success");
+        alert.classList.remove("whoops");
+    }
+
+    return {winOrLoss, clear}
 }
 
 let currentGame = Pull();
