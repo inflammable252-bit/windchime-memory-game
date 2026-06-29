@@ -11,8 +11,6 @@ let pickCount = 0;
 let result = "loss";
 let resultText ;
 
-//add another win check variable
-
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -65,7 +63,7 @@ function checkSelection() {
             result = "lose";
             return
         }
-        console.log(selection[index], "vs", runes[index])
+         console.log(selection[index], "vs", runes[index])
     })
     console.log(selection)
     console.log(runes)
@@ -178,11 +176,11 @@ function updateMessages() {
     let loseMessagesArr = ["Should have flasked.", "Did you forget to repair?", "So much lag.", "Hearthing saves repairs."]
     let winMessage = () => {
         const randomMsg = winMessagesArr[Math.floor(Math.random() * winMessagesArr.length)]
-        return `Win! ${randomMsg}`
+        return randomMsg;
         }
     let loseMessage = () => {
         const randomMsg = loseMessagesArr[Math.floor(Math.random() * loseMessagesArr.length)]
-        return `Wipe! ${randomMsg}`
+        return randomMsg;
         }
     
     function determineResultText() {
