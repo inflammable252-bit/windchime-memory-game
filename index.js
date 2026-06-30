@@ -217,4 +217,41 @@ function postResults() {
     
 }
 
+/* Adapted from https://dev.to/thormeier/old-school-tech-how-to-animate-the-classic-dvd-logo-bouncing-11d9 */
+
+let glaive = document.querySelector("div.glaive-wrapper");
+function addGlaiveBounce() {
+    let body = document.querySelector("body")
+    let topDelta = 1;
+    let leftDelta = 1;
+
+    setInterval(() => {
+        const currentTop = parseInt(glaive.style.top) || 0;
+        const currentLeft = parseInt(glaive.style.left) || 0;
+        const currentRight = currentLeft + glaive.clientWidth;
+        const currentBottom = currentTop + glaive.clientWidth;
+
+        if (currentBottom >= body.clientHeight) {
+            topDelta = -2;
+        }
+        if (currentTop <= 0) {
+            topDelta = 2
+        }
+        if (currentRight >= body.clientWidth) {
+            leftDelta = -2
+        }
+        if (currentLeft <= 0) {
+            leftDelta = 2
+        }
+        glaive.style.top = currentTop + topDelta + "px";
+        glaive.style.left = currentLeft + leftDelta + "px"
+    }, 5)
+}
+function addGlaiveMouseover() {
+    glaive.addEventListener("mouseover", () => {
+        glaive.style.backgroundColor = "blue"
+    })
+}
+// addGlaiveBounce()
+addGlaiveMouseover()
 let currentGame = Pull();
