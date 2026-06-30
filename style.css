@@ -1,8 +1,8 @@
 :root {
     --bg: rgb(47, 43, 53);
-    --button: rgb(57, 47, 73);
-    --red-bg: rgb(119, 79, 88);
-    --blue-bg: rgb(91, 87, 124);
+    --button: #392f49;
+    --red-bg: rgba(255, 70, 70, 0.212);
+    --blue-bg: rgba(75, 55, 255, 0.171);
     --rune-box: rgb(122, 121, 126);
 }
 @font-face {
@@ -55,15 +55,24 @@ body {
         }
     }
 }
+
+div#bg-colorizer {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 0;
+    transition: all 0.5s linear;
+}
 main {
     grid-column: 2/3;
     grid-row: 2/3;
-    border: 1px solid purple;
+    /* border: 1px solid purple; */
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 0.5fr min-content;
     gap: 1vw;
     align-items: start;
+    z-index: 1;
 }
 
 article#rune-box {
@@ -217,6 +226,7 @@ nav {
     flex-direction: column;
     align-items: center;
     align-self: start;
+    z-index: 1;
     button {
         border: 1px solid gray;
         margin-top: 0.25vw;
@@ -238,20 +248,22 @@ p#alert {
     align-self: center;
     justify-self: center;
     text-align: center;
-    font-size: calc(5rem + 2vw);
-    z-index: 5;
+    font-size: clamp(2rem, 15vw, 5rem);
+    z-index: 3;
     font-weight: 600;
     letter-spacing: 0.2em;
+    font-weight: bolder;
     text-shadow: -5px 10px 0px #000;
     transition: all 0.7s;
     opacity: 0;
+    pointer-events: none;
 }
 p#alert.whoops {
     color: red;
     opacity: 1;
 }
 p#alert.great-success {
-    color: green;
+    color: rgb(80, 241, 40);
     opacity: 1;
 }
 aside#message-area {

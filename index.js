@@ -3,10 +3,16 @@ const colors = ["normal", "red", "blue"];
 const colorRegular = "rgb(47, 43, 53)";
 const colorRed = "rgb(119, 79, 88)";
 const colorBlue = "rgb(91, 87, 124)";
-const gameLengthSeconds = 5;
-const interval = (gameLengthSeconds*1000) / 8;
+// const gameLengthSeconds = 5;
+// const interval = (gameLengthSeconds*1000) / 8;
+const interval = 1500;
 let selection = [];
 let pickCount = 0;
+
+let mode = "normal";
+
+let locations = ["upstairs", "red", "blue"];
+let playerLoc = "upstairs";
 
 let result = "loss";
 let resultText ;
@@ -24,26 +30,36 @@ function Pull() {
 
     async function memoryGame() {
         shuffleRunes()
+        locationRandomizer()
+        updateLoc(playerLoc)
         await delay(interval);
         let counter = 0;
         while (restartGame===false && counter < 5) { //Rune display
-            console.log("Icon " + counter + ": " + runes[counter])
-            displayCurrent(runes[counter])
-            console.log("resetGame: ", restartGame)
-            counter++
-            await delay(interval);
+            if (playerLoc === "blue" && counter !== 2) {
+                selectRune(runes[counter]);
             }
+            if (playerLoc === "red" && (counter !== 1 && counter !==4)) {
+                selectRune(runes[counter]);
+            }
+            displayCurrent(runes[counter]);
+            console.log("Icon ", counter , ": ", runes[counter])
+            counter++
+            console.log("pickCount: ", pickCount)
+            await delay(interval);
+        }
         if (restartGame===true) {
             console.log("Game restarted!")
             restartGame=false;
             return;
         }
         displayCurrent("clear");
-        await delay(interval); // Extra delay
-        checkSelection()
+        await delay(interval*2); // Extra delay
+        if (restartGame===false) {
+        checkSelection(playerLoc)
+        updateLoc("upstairs")
         updateMessages().winOrLoss()
-        console.log(result);
-        console.log("resetGame: ", restartGame)
+        // console.log("resetGame: ", restartGame)
+        }
     }
 
     function getRestart() {
@@ -54,19 +70,39 @@ function Pull() {
     }
     return {getRestart, updateRestart}
 }
-function checkSelection() {
+function locationRandomizer() {
+    playerLoc = locations[Math.floor(Math.random() * locations.length)]
+}
+function updateLoc(color) {
+    const bg = document.getElementById("bg-colorizer");
+    switch (color) {
+        case ("upstairs"):
+            bg.style.backgroundColor = "var(--bg)";
+            break;
+        case ("blue"):
+            bg.style.backgroundColor = "var(--blue-bg)";
+            break;
+        case ("red"): 
+            bg.style.backgroundColor = "var(--red-bg)";
+            break;
+    }
+}
+function checkSelection(color="upstairs") {
     selection.forEach((item, index) => {
         if (item === runes[index]) {
             result = "win";
         } 
-        else {
+        else if (item !== runes[index]) {
             result = "lose";
             return
         }
-         console.log(selection[index], "vs", runes[index])
+        if (selection.length < runes.length) {
+            result = "lose"
+        }
     })
-    console.log(selection)
-    console.log(runes)
+    console.log("Windchime: ", runes);
+    console.log("Player color: ", playerLoc)
+    console.log("Player: ", selection);
 }
 
 function shuffleRunes() {
@@ -79,69 +115,30 @@ function shuffleRunes() {
 
 function displayCurrent(rune) {
     let floatingRune = document.getElementById("current-icon");
-    let current;
-    switch (rune) {
-        case "X":
-            current="X.jpg";
-            break;
-        case "circle":
-            current="circle.jpg";
-            break;
-        case "diamond":
-            current="diamond.jpg";
-            break;
-        case "triangle":
-            current="triangle.jpg";
-            break;
-        case "T":
-            current="T.jpg";
-            break;
-        case "clear":
-            current = "";
-            break;
+    if (rune === "clear") {
+        floatingRune.style.backgroundImage = "";
+        return
     }
-
-    floatingRune.style.backgroundImage = `url(./${current})`
+    floatingRune.style.backgroundImage = `url(./${rune}.jpg)`
 }
 
 const picker = document.getElementById("picker");
 const runeSlots = document.querySelectorAll("div.rune");
 picker.addEventListener("click", (e) => {
-    let url;
-    switch (e.target.id) {
-        case "picker":
-            return;
-        case "X":
-            url="X.jpg";
-            break;
-        case "circle":
-            url="circle.jpg";
-            break;
-        case "diamond":
-            url="diamond.jpg";
-            break;
-        case "triangle":
-            url="triangle.jpg";
-            break;
-        case "T":
-            url="T.jpg";
-            break;
-    }
-    selectRune(url, e.target.id)
+    if (e.target.id === "picker") return;
+    selectRune(e.target.id)
 })
-function selectRune(url, target) {
+function selectRune(runeName) {
     if (pickCount === 5) {
         console.log("End!"); return
     }
-    selection.push(target)
-    runeSlots[pickCount].style.backgroundImage = `url(./${url})`
+    selection.push(runeName);
+    runeSlots[pickCount].style.backgroundImage = `url(./${runeName}.jpg)`;
     pickCount++
-    console.log(selection)
 }
 const menuButtons = document.querySelector("nav");
 
 menuButtons.addEventListener("click", (e) => {
-    refreshRestartButton()
     switch (e.target.id) {
         case ("restart"):
             console.log("restart clicked!")
@@ -160,20 +157,20 @@ function clearUI() {
     selection = [];
     pickCount = 0
 }
-function refreshRestartButton() {
-    const button = document.getElementById("restart");
-    if (currentGame.getRestart === true) {
-        button.classList.add("wait");
-    }
-    else button.classList.remove("wait");
-}
+// function refreshRestartButton() {
+//     const button = document.getElementById("restart");
+//     if (currentGame.getRestart === true) {
+//         button.classList.add("wait");
+//     }
+//     else button.classList.remove("wait");
+// }
 function updateMessages() {
     const alert = document.getElementById("alert");
     const window = document.getElementById("message-area");
     const message = document.getElementById("message");
     
-    let winMessagesArr = ["Great prog!", "Now we can see the rest of P1!", "The rest of the fight is easy, right?"]
-    let loseMessagesArr = ["Should have flasked.", "Did you forget to repair?", "So much lag.", "Hearthing saves repairs."]
+    let winMessagesArr = ["Great prog!", "Now we can see the rest of P1!", "The rest of the fight is easy, right?", "n i c e", "100 parse for sure."]
+    let loseMessagesArr = ["Should have flasked.", "Did you forget to repair?", "So much lag.", "Hearthing saves repairs.", "Definitely RNG.", "Anyone logging?", "You were pumping.", "They should have given you PI."]
     let winMessage = () => {
         const randomMsg = winMessagesArr[Math.floor(Math.random() * winMessagesArr.length)]
         return randomMsg;
@@ -214,6 +211,10 @@ function updateMessages() {
     }
 
     return {winOrLoss, clear}
+}
+
+function postResults() {
+    
 }
 
 let currentGame = Pull();
