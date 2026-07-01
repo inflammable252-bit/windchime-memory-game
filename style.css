@@ -275,17 +275,33 @@ aside#message-area {
 p#message {
     color: #FFF;
 }
-
 div.glaive-wrapper {
-    --box: calc(38px + 1vw);
-    position: relative;
+    width: fit-content;
+    height: fit-content;
+}
+img.glaive {
+    --box: calc(40px + 1vw);
+    position: absolute;
     height: var(--box);
     width: var(--box);
-    z-index: 10;
-    background-color: purple;
+    z-index: 5;
     top: 0;
     left: 0;
+    border: 5px groove #78ebffce;
     border-radius: 50%;
     transition: all linear;
-    clip-path: circle(50%)
+    clip-path: circle(50%);
+    animation: watch-out 0.7s linear infinite;
+}
+svg {
+    fill: white;
+}
+
+@keyframes watch-out {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(720deg);
+    }
 }

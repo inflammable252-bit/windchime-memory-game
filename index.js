@@ -217,41 +217,62 @@ function postResults() {
     
 }
 
-/* Adapted from https://dev.to/thormeier/old-school-tech-how-to-animate-the-classic-dvd-logo-bouncing-11d9 */
+/* "DVD screensaver" bounce effect adapted from https://dev.to/thormeier/old-school-tech-how-to-animate-the-classic-dvd-logo-bouncing-11d9 */
 
-let glaive = document.querySelector("div.glaive-wrapper");
-function addGlaiveBounce() {
-    let body = document.querySelector("body")
-    let topDelta = 1;
-    let leftDelta = 1;
+let glaiveWrapper = document.querySelector("div.glaive-wrapper");
 
-    setInterval(() => {
-        const currentTop = parseInt(glaive.style.top) || 0;
-        const currentLeft = parseInt(glaive.style.left) || 0;
-        const currentRight = currentLeft + glaive.clientWidth;
-        const currentBottom = currentTop + glaive.clientWidth;
+class Glaive {
+    create() {
+        const glaive = document.createElement("img");
+        glaive.src = "./star-shuriken-svgrepo-com.svg";
+        glaive.classList.add("glaive");
+        let body = document.querySelector("body")
+        glaiveWrapper.append(glaive);
+        this.glaive = glaive;
+        this.body = body
+        this.addBounce();
+        this.addMouseover()
+    }
+    
+    addBounce() {
+        let topDelta = 1;
+        let leftDelta = 1;
 
-        if (currentBottom >= body.clientHeight) {
-            topDelta = -2;
-        }
-        if (currentTop <= 0) {
-            topDelta = 2
-        }
-        if (currentRight >= body.clientWidth) {
-            leftDelta = -2
-        }
-        if (currentLeft <= 0) {
-            leftDelta = 2
-        }
-        glaive.style.top = currentTop + topDelta + "px";
-        glaive.style.left = currentLeft + leftDelta + "px"
-    }, 5)
-}
-function addGlaiveMouseover() {
-    glaive.addEventListener("mouseover", () => {
-        glaive.style.backgroundColor = "blue"
+        setInterval(() => {
+            const currentTop = parseInt(this.glaive.style.top) || 0;
+            const currentLeft = parseInt(this.glaive.style.left) || 0;
+            const currentRight = currentLeft + this.glaive.clientWidth;
+            const currentBottom = currentTop + this.glaive.clientHeight;
+
+            if (currentBottom >= this.body.clientHeight - (this.glaive.clientHeight)/2) {
+                topDelta = -2;
+            }
+            if (currentTop <= 0) {
+                topDelta = 2
+            }
+            if (currentRight >= this.body.clientWidth - (this.glaive.clientWidth)/2) {
+                leftDelta = -2
+            }
+            if (currentLeft <= 0) {
+                leftDelta = 2
+            }
+            this.glaive.style.top  = currentTop + topDelta + "px";
+            this.glaive.style.left = currentLeft + leftDelta + "px"
+        }, 6)
+    }
+
+    addMouseover() {
+    this.glaive.addEventListener("mouseover", () => {
+        console.log("Boom")
     })
+    }
 }
-// addGlaiveBounce()
-addGlaiveMouseover()
+
+function removeGlaives() {
+    glaiveWrapper.replaceChildren("")
+}
+
+const newGlaive = new Glaive;
+newGlaive.create()
+
 let currentGame = Pull();
